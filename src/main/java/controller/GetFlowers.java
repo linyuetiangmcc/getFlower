@@ -79,7 +79,7 @@ public class GetFlowers {
 		if(flowerGroup == null)
 			return;
 
-		if (flowerGroup.getMessage().equals("亲，已经没有更多的数据了哦")){
+		if (flowerGroup.getMessage().contains("亲，已经没有更多的数据了哦")){
 			return;
 		}
 		
