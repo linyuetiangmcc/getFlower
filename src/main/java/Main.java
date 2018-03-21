@@ -26,7 +26,7 @@ public class Main {
     public Main() {
     }
 
-    public void run() {
+    public void run(int flag) {
         GetFriends getFriends = new GetFriends();
         getFriends.run();
         friends = getFriends.getFriends();
@@ -42,6 +42,13 @@ public class Main {
         String nickName = "";
         Date plantEndDate = new Date();
         ArrayList<FlowerPost> flowerPosts = new ArrayList<FlowerPost>();
+
+
+        String filename = "";
+        if(flag == 1)
+            filename ="flowers_to_post_hjl.txt";
+        else
+            filename ="flowers_to_post.txt";
 
         for (Flower flower : flowers) {
             FlowerPost flowerPost = new FlowerPost();
@@ -69,9 +76,21 @@ public class Main {
 					nickName = "N-" + nickName;
 				}*/
 
+                String openid = "";
+                try {
+                    FileInputStream in = new FileInputStream("openid.txt");
+                    InputStreamReader inReader;
+                    inReader = new InputStreamReader(in, "UTF-8");
+                    BufferedReader bufReader = new BufferedReader(inReader);
+                    openid = bufReader.readLine();
+                    bufReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
                 if (flower.getEnergy().contains("Y")){
-                    if(flower.getPlantOpenId().equals("oggN1jiZF8AthajXkotabFE6lbmk")){
+                    if(flower.getPlantOpenId().equals(openid)){
                         //myself自己的花有保护 ＋ 2S
                         plantEndDate.setTime(plantEndDate.getTime() + 2000);
                     }
@@ -108,7 +127,7 @@ public class Main {
 
         int oldcount = 0; //读取原来的文件
         try {
-            FileInputStream in = new FileInputStream("flowers_to_post.txt");
+            FileInputStream in = new FileInputStream(filename);
             InputStreamReader inReader = new InputStreamReader(in, "UTF-8");
             BufferedReader bufReader = new BufferedReader(inReader);
             String line = null;
@@ -138,7 +157,7 @@ public class Main {
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("读取Old flower_to_Post出错！");
+            System.out.println("read Old flower_to_Post error！");
         }
         System.out.println("old file has " + oldcount + " flowers has founded");
 
@@ -146,7 +165,7 @@ public class Main {
         ComparatorDate c = new ComparatorDate();
         Collections.sort(flowerPosts, c);
 
-        File file = new File("flowers_to_post.txt");
+        File file = new File(filename);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -187,16 +206,16 @@ public class Main {
         Main main = new Main();
         Date now = new Date();
         now.setTime(System.currentTimeMillis());
-        System.out.println(now + "--get flowers started!!");
-        main.run();
-        now.setTime(System.currentTimeMillis());
-        System.out.println(now + "--get flowers ended!!");
 
-        int hour= 2;  //读取命令行，1，2 ，分开小时获取花朵情况
+
+        int hour= 2;  //读取命令行，1，2 ，分开小时获取花朵情况，同时作为控制不同人的标志，主要是生成花朵文件名不同
         if(args.length == 1)
             hour = Integer.parseInt(args[0]);
 
-
+        System.out.println(now + "--get flowers started!!");
+        main.run(hour);
+        now.setTime(System.currentTimeMillis());
+        System.out.println(now + "--get flowers ended!!");
 
 
         while (true) {
@@ -208,7 +227,7 @@ public class Main {
                 if ((calendar.get(Calendar.HOUR_OF_DAY) % hour) == 0 && calendar.get(Calendar.MINUTE) == 0
                         && calendar.get(Calendar.SECOND) == 0) {
                     System.out.println(now + "--get flowers started!!");
-                    main.run();
+                    main.run(hour);
                     now.setTime(System.currentTimeMillis());
                     System.out.println(now + "--get flowers ended!!");
                     Thread.sleep(1010);

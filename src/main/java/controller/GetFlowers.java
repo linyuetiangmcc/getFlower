@@ -151,6 +151,10 @@ public class GetFlowers {
 				content += friends.get(i).getEncryptCertNo();
 				content += "&type=1";
 				postResutFriend = httpClientUtil.doPost(url_getflower, httpHeadMap, charset, content);
+
+				if (postResutFriend.contains("已经没有更多的数据了哦")){
+					continue;
+				}
 				// System.out.println(postResutFriend);
 				addFlower(postResutFriend);
 				//Thread.sleep(1000);
