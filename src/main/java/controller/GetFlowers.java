@@ -152,7 +152,7 @@ public class GetFlowers {
 				content += "&type=1";
 				postResutFriend = httpClientUtil.doPost(url_getflower, httpHeadMap, charset, content);
 
-				if (postResutFriend.contains("已经没有更多的数据了哦")){
+				if (postResutFriend.contains("{\"message\":\"亲，已经没有更多的数据了哦\",\"success\":true,\"flag\":false}")){
 					continue;
 				}
 				// System.out.println(postResutFriend);
