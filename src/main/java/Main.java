@@ -4,6 +4,7 @@ import entity.Flower;
 import entity.FlowerPost;
 import entity.Friend;
 import util.ComparatorDate;
+import util.ReadFileFirstLine;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,11 +23,13 @@ import java.net.URLEncoder;
 public class Main {
 
     private static ArrayList<Friend> friends = null;
+    private static int getflowerHour = 2; //时间控制，在哪个点获取花，1（HJL）2（LTY）
+    private static int userIndex = 2;  //区分两人，1（HJL),2(LYT)
 
     public Main() {
     }
 
-    public void run(int flag) {
+    public void run() {
         GetFriends getFriends = new GetFriends();
         getFriends.run();
         friends = getFriends.getFriends();
@@ -45,7 +48,7 @@ public class Main {
 
 
         String filename = "";
-        if(flag == 1)
+        if(getflowerHour == 1)
             filename ="flowers_to_post_hjl.txt";
         else
             filename ="flowers_to_post.txt";
@@ -65,28 +68,9 @@ public class Main {
 
                 //防止有些人用“｜”做用户名干扰
                 nickName = nickName.replace('|', '-');
-
                 plantEndDate = flower.getPlantEndDate_convert();//
 
-				/*if (flower.getEnergy().contains("Y")
-						&& !flower.getPlantOpenId().equals("oggN1jiZF8AthajXkotabFE6lbmk")) {
-					plantEndDate.setTime(plantEndDate.getTime() + 5 * 60 * 1000);
-					nickName = "Y-" + nickName;
-				} else {
-					nickName = "N-" + nickName;
-				}*/
-
-                String openid = "";
-                try {
-                    FileInputStream in = new FileInputStream("openid.txt");
-                    InputStreamReader inReader;
-                    inReader = new InputStreamReader(in, "UTF-8");
-                    BufferedReader bufReader = new BufferedReader(inReader);
-                    openid = bufReader.readLine();
-                    bufReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                String openid = ReadFileFirstLine.readFirstLine("openid.txt");
 
 
                 if (flower.getEnergy().contains("Y")){
@@ -207,13 +191,13 @@ public class Main {
         Date now = new Date();
         now.setTime(System.currentTimeMillis());
 
-
-        int hour= 2;  //读取命令行，1，2 ，分开小时获取花朵情况，同时作为控制不同人的标志，主要是生成花朵文件名不同
-        if(args.length == 1)
-            hour = Integer.parseInt(args[0]);
+        if(args.length == 1) {
+            getflowerHour = Integer.parseInt(args[0]);
+            userIndex =  Integer.parseInt(args[0]);
+        }
 
         System.out.println(now + "--get flowers started!!");
-        main.run(hour);
+        main.run();
         now.setTime(System.currentTimeMillis());
         System.out.println(now + "--get flowers ended!!");
 
@@ -224,10 +208,10 @@ public class Main {
                 now.setTime(System.currentTimeMillis());
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(now);
-                if ((calendar.get(Calendar.HOUR_OF_DAY) % hour) == 0 && calendar.get(Calendar.MINUTE) == 0
+                if ((calendar.get(Calendar.HOUR_OF_DAY) % getflowerHour) == 0 && calendar.get(Calendar.MINUTE) == 0
                         && calendar.get(Calendar.SECOND) == 0) {
                     System.out.println(now + "--get flowers started!!");
-                    main.run(hour);
+                    main.run();
                     now.setTime(System.currentTimeMillis());
                     System.out.println(now + "--get flowers ended!!");
                     Thread.sleep(1010);
@@ -235,7 +219,6 @@ public class Main {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
 
             try {
                 Thread.sleep(400);

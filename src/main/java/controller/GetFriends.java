@@ -14,6 +14,7 @@ import com.google.gson.JsonParser;
 import entity.Friend;
 import entity.FriendGroup;
 import util.HttpClientUtil;
+import util.ReadFileFirstLine;
 
 public class GetFriends {
 	private String url_getfriend = "https://weixin.spdbccc.com.cn/wxrp-page-steal/ajaxMyFlowerfiendsGroup"; 
@@ -44,17 +45,7 @@ public class GetFriends {
 		httpHeadMap.put("Accept-Encoding","gzip, deflate"); 
 		httpHeadMap.put("Accept-Language","zh-CN,zh;q=0.8,en-us;q=0.6,en;q=0.5;q=0.4"); 
         //cookie init
-		try {
-			FileInputStream in = new FileInputStream("cookie.txt");  
-	        InputStreamReader inReader;
-			inReader = new InputStreamReader(in, "UTF-8");
-			BufferedReader bufReader = new BufferedReader(inReader);
-			String line = bufReader.readLine();
-			httpHeadMap.put("Cookie", line);
-			bufReader.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}  
+		httpHeadMap.put("Cookie", ReadFileFirstLine.readFirstLine("cookie.txt"));
 		httpHeadMap.put("Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
 	}
 	
